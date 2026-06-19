@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Dynamic Site</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@600&display=swap" rel="stylesheet">
+<style>
+
+/* ==========================================
+   RESET
+========================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    font-size:16px;
+    scroll-behavior:smooth;
+	  font-family: "Klee One", cursive;
+  font-weight: 600;
+  font-style: normal;
+}
+
+body{
+    min-height:100vh;
+    overflow-x:hidden;
+    background:#000;
+    color:#fff;
+}
+
+/* ==========================================
+   ROOT
+========================================== */
+
+:root{
+
+    --primary:#3b82f6;
+    --primary2:#7c3aed;
+
+    --glass:
+    rgba(255,255,255,.12);
+
+    --glass-dark:
+    rgba(0,0,0,.35);
+
+    --border:
+    rgba(255,255,255,.15);
+
+    --radius:20px;
+
+    --shadow:
+    0 20px 40px rgba(0,0,0,.25);
+
+}
+
+/* ==========================================
+   BACKGROUND VIDEO
+========================================== */
+
+.bg-video{
+
+    position:fixed;
+
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    z-index:-2;
+
+}
+
+.bg-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+
+    linear-gradient(
+    rgba(0,0,0,.35),
+    rgba(0,0,0,.45)
+    );
+
+    z-index:-1;
+
+}
+
+/* ==========================================
+   OPENING
+========================================== */
+
+.opening-container{
+
+    position:fixed;
+
+    inset:0;
+
+    background:#000;
+
+    z-index:9999;
+
+}
+
+.opening-grid{
+
+    width:100%;
+    height:100%;
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(4,1fr);
+
+    grid-template-rows:
+    repeat(4,1fr);
+
+}
+
+.piece{
+
+    background-size:cover;
+
+    background-position:center;
+
+    background-repeat:no-repeat;
+
+    will-change:
+    transform,
+    opacity;
+
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.header{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+
+    z-index:1000;
+
+    backdrop-filter:
+    blur(12px);
+
+}
+
+.logo{
+
+    height:80px;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    font-size:32px;
+
+    font-weight:800;
+
+    letter-spacing:.08em;
+
+    background:
+
+    rgba(255,255,255,.85);
+
+    color:#111;
+
+}
+
+.nav{
+
+    height:60px;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    gap:16px;
+
+    background:
+
+    rgba(0,0,0,.65);
+
+    backdrop-filter:
+    blur(20px);
+
+}
+
+.nav-btn{
+
+    border:none;
+
+    background:none;
+
+    color:#fff;
+
+    cursor:pointer;
+
+    height:100%;
+
+    padding:0 25px;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.nav-btn:hover{
+
+    background:
+
+    rgba(255,255,255,.1);
+
+}
+
+/* ==========================================
+   MEGA MENU
+========================================== */
+
+.mega-menu{
+
+    display:none;
+
+    position:fixed;
+
+    top:150px;
+
+    left:50%;
+
+    transform:
+    translateX(-50%);
+
+    width:min(1200px,95vw);
+
+    padding:30px;
+
+    border-radius:25px;
+
+    background:
+
+    rgba(255,255,255,.9);
+
+    backdrop-filter:
+    blur(30px);
+
+    color:#111;
+
+    box-shadow:
+    var(--shadow);
+
+    z-index:1100;
+
+}
+
+.mega-menu.active{
+
+    display:block;
+
+    animation:
+    menuFade .35s ease;
+
+}
+
+@keyframes menuFade{
+
+    from{
+
+        opacity:0;
+
+        transform:
+        translateX(-50%)
+        translateY(-10px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+        translateX(-50%)
+        translateY(0);
+
+    }
+
+}
+
+.menu-close{
+
+    border:none;
+
+    cursor:pointer;
+
+    background:#eee;
+
+    padding:10px 15px;
+
+    border-radius:12px;
+
+    margin-bottom:20px;
+
+}
+
+.menu-links{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:15px;
+
+}
+
+.menu-link{
+
+    flex:1;
+
+    min-width:220px;
+
+    padding:20px;
+
+    border-radius:16px;
+
+    border:
+
+    1px solid
+    rgba(0,0,0,.1);
+
+    background:#fff;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.menu-link:hover{
+
+    transform:
+    translateY(-4px);
+
+    box-shadow:
+    0 10px 25px
+    rgba(0,0,0,.1);
+
+}
+
+/* ==========================================
+   MAIN
+========================================== */
+
+#pageContainer{
+
+    width:100%;
+
+}
+
+/* ==========================================
+   PAGE
+========================================== */
+
+.page{
+
+    display:none;
+
+    max-width:1200px;
+
+    margin:auto;
+
+    padding:
+
+    180px
+    30px
+    50px;
+  /* 画面全体にオーバーレイを広げる */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  
+  /* 縦スクロールを有効にする */
+  overflow-y: auto;
+  
+  /* 背景を半透明にするなど */
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+	hr {
+  background-color: #fff; /* お好みの色を指定 */
+  border: none; /* 枠線を消す */
+  height: 2px; /* 線の太さ */
+}
+.overlay-content {
+  /* 中身のコンテンツを広げたい場合 */
+  min-height: 100%; /* 親の高さ以上に伸ばす */
+  padding: 40px;
+  background-color: #fff;
+}
+}
+
+	.page::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+    rgba(0,0,0,.45);
+
+    backdrop-filter:
+    blur(4px);
+
+    z-index:0;
+
+}
+
+
+	.page > *{
+
+    position:relative;
+
+    z-index:1;
+
+}
+.page.active{
+
+    display:block;
+
+    animation:
+    pageFade .4s ease;
+
+}
+
+@keyframes pageFade{
+
+    from{
+
+        opacity:0;
+
+        transform:
+        translateY(15px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+        translateY(0);
+
+    }
+
+}
+
+.page h1{
+
+    font-size:3rem;
+
+    margin-bottom:20px;
+
+    font-weight:800;
+
+}
+
+.page p{
+
+    line-height:1.8;
+
+    font-size:2rem;
+
+}
+
+/* ==========================================
+   SCROLLBAR
+========================================== */
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:
+    rgba(255,255,255,.25);
+
+    border-radius:999px;
+
+}
+
+/* ==========================================
+   TABLET
+========================================== */
+
+@media(max-width:1024px){
+
+    .logo{
+
+        height:72px;
+
+        font-size:28px;
+
+    }
+
+    .mega-menu{
+
+        width:96vw;
+
+    }
+
+    .menu-link{
+
+        min-width:180px;
+
+    }
+
+    .page{
+
+        padding:
+        170px 25px 40px;
+
+    }
+
+    .page h1{
+
+        font-size:2.4rem;
+
+    }
+
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media(max-width:768px){
+
+    html{
+
+        font-size:15px;
+
+    }
+
+    .logo{
+
+        height:64px;
+
+        font-size:22px;
+
+    }
+
+    .nav{
+
+        justify-content:flex-start;
+
+        overflow-x:auto;
+
+        padding:0 10px;
+
+        gap:8px;
+
+    }
+
+    .nav::-webkit-scrollbar{
+
+        display:none;
+
+    }
+
+    .nav-btn{
+
+        flex-shrink:0;
+
+        padding:0 14px;
+
+        font-size:14px;
+
+    }
+
+    .mega-menu{
+
+        top:130px;
+
+        width:96vw;
+
+        padding:20px;
+
+    }
+
+    .menu-links{
+
+        flex-direction:column;
+
+    }
+
+    .menu-link{
+
+        width:100%;
+
+        min-width:auto;
+
+    }
+
+    .page{
+
+        padding:
+        150px
+        16px
+        30px;
+
+    }
+
+    .page h1{
+
+        font-size:2rem;
+
+    }
+
+}
+
+/* ==========================================
+   SMALL MOBILE
+========================================== */
+
+@media(max-width:480px){
+
+    .logo{
+
+        height:56px;
+
+        font-size:20px;
+
+    }
+
+    .nav{
+
+        height:54px;
+
+    }
+
+    .nav-btn{
+
+        font-size:13px;
+
+        padding:0 12px;
+
+    }
+
+    .mega-menu{
+
+        top:115px;
+
+        padding:15px;
+
+        border-radius:18px;
+
+    }
+
+    .page{
+
+        padding:
+        130px
+        12px
+        25px;
+
+    }
+
+    .page h1{
+
+        font-size:1.6rem;
+
+    }
+
+}
+
+/* ==========================================
+   LANDSCAPE PHONE
+========================================== */
+
+@media
+(max-height:500px)
+and
+(orientation:landscape){
+
+    .logo{
+
+        height:50px;
+
+    }
+
+    .nav{
+
+        height:45px;
+
+    }
+
+    .mega-menu{
+
+        top:100px;
+
+        max-height:65vh;
+
+        overflow:auto;
+
+    }
+
+}
+
+/* ==========================================
+   LARGE MONITOR
+========================================== */
+
+@media(min-width:1600px){
+
+    .page{
+
+        max-width:1400px;
+
+    }
+
+    .mega-menu{
+
+        max-width:1400px;
+
+    }
+
+}
+
+/* ==========================================
+   DARK MODE SUPPORT
+========================================== */
+
+@media(prefers-color-scheme:dark){
+
+    .mega-menu{
+
+        background:
+        rgba(15,15,20,.95);
+
+        color:#fff;
+
+    }
+
+    .menu-link{
+
+        background:
+        rgba(255,255,255,.05);
+
+        color:#fff;
+
+        border-color:
+        rgba(255,255,255,.1);
+
+    }
+
+    .menu-close{
+
+        background:
+        rgba(255,255,255,.1);
+
+        color:#fff;
+
+    }
+
+}
+</style>
+
+</head>
+<body>
+
+
+<!-- Opening -->
+<div class="opening-container">
+
+    <div class="opening-grid">
+
+        <div class="piece"></div>
+        <div class="piece"></div>
+        <div class="piece"></div>
+        <div class="piece"></div>
+
+        <div class="piece"></div>
+        <div class="piece"></div>
+        <div class="piece"></div>
+        <div class="piece"></div>
+
+        <div class="piece"></div>
+        <div class="piece"></div>
+        <div class="piece"></div>
+        <div class="piece"></div>
+
+        <div class="piece"></div>
+        <div class="piece"></div>
+        <div class="piece"></div>
+        <div class="piece"></div>
+
+    </div>
+
+</div>
+
+<!-- Background Video -->
+<video class="bg-video"></video>
+
+<!-- Overlay -->
+<div class="bg-overlay"></div>
+
+<!-- Header -->
+<header class="header">
+
+    <div class="logo">
+単語・計算方法のまとめ
+    </div>
+
+    <nav class="nav">
+
+        <button
+            class="nav-btn"
+            data-menu="products">
+教科指定
+				</button>
+
+
+    </nav>
+
+</header>
+
+<!-- Menu Area -->
+<div id="menuContainer">
+
+    <!-- Products -->
+    <div
+        id="products"
+        class="mega-menu">
+
+        <button class="menu-close">
+            ✕
+        </button>
+
+        <div class="menu-links">
+
+            <div
+                class="menu-link"
+                data-page="page-a">
+                数学
+            </div>
+
+            <div
+                class="menu-link"
+                data-page="page-b">
+                社会
+            </div>
+
+            <div
+                class="menu-link"
+                data-page="page-c">
+                理科
+            </div>
+
+        </div>
+
+    </div>
+
+ 
+</div>
+
+<!-- Main -->
+<main id="pageContainer">
+
+    <section
+        id="home"
+        class="page active">
+
+        <h1>トップページ</h1>
+
+        <p>
+            単語や計算方法をまとめたサイトです。
+					ヤバい人とかは見て覚えてみてください。
+        </p>
+
+    </section>
+
+    <section
+        id="page-a"
+        class="page">
+
+        <h1>数学</h1>
+
+<h1>多項式の加法</h1>
+
+			<p> (ax+by+c)+(dx+ey+f)<br>=(a+d)x+(b+e)y+(c+f)<br>このように、それぞれの係数をまとめる</p>
+<hr>
+			<h1>多項式の減法</h1>
+
+			<p> (ax+by+c)-(dx+ey+f)<br>=(ax+by+c)+(-dx-ey-f)<br>=(a-d)x+(b-e)y+(c-f)<br>このように、減法では-の符号の後ろの項の中の符号をすべて変えて-を+に変える</p>
+<hr>
+<h1>連立加減法</h1>
+			<p>ax+by=c…①
+			   dx+ey=f…②
+		<br>の場合、xを揃えるとすると、<br>
+			adx+bdy=cd…①'
+			adx+aey=af…②'<br>
+				となり、xの符号が揃っていたら式同士を引き、異なっていたら足す。(yも同様)<br>
+				その後、①か②に代入し、もう一方を求める。
+			</p>
+<hr>
+			<h1>連立代入法①</h1>
+			<p>x=y-a…①
+			   x+y=b…②
+			このとき、①を②に代入して
+			y-a+y=b
+			2y=b+a
+			y=a+b/2
+			となる
+			あとは加減法と一緒</p>
+			<hr>
+			<h1>連立代入法②</h1>
+<p>x=2y+8
+   x=4y+4
+みたいな式は、x=同士なので、
+2y+8=4y+4と解くことができる。
+-2y=-4
+y=2
+あとは加減法と一緒</p>
+			<hr>
+<h1>かっこがあるとき</h1>
+			<p>展開してあとは↑の3つから選ぶ</p>
+			<hr>
+			<h1>分数・小数</h1>
+<p>式を10倍などして整数だけの式にしてあとは加減か代入で解く。</p>
+			<hr>
+			<h1>A=B=C</h1>
+			<p>A=B,C=Bや<br>A=C,B=C,<br>B=A,C=Aのような連立方程式を作って解く。</p>
+    </section>
+
+    <section
+        id="page-b"
+        class="page">
+
+        <h1>PAGE B</h1>
+
+        <p>
+            Product B の内容
+        </p>
+
+    </section>
+
+    <section
+        id="page-c"
+        class="page">
+
+        <h1>PAGE C</h1>
+
+        <p>
+            Product C の内容
+        </p>
+
+    </section>
+
+    <section
+        id="profile"
+        class="page">
+
+        <h1>PROFILE</h1>
+
+        <p>
+            会社概要
+        </p>
+
+    </section>
+
+    <section
+        id="history"
+        class="page">
+
+        <h1>HISTORY</h1>
+
+        <p>
+            沿革
+        </p>
+
+    </section>
+
+</main>
+
+<script>
+
+/* ==========================================
+   SITE CONFIG
+========================================== */
+
+const SITE = {
+
+    logo: "SITE LOGO",
+
+    opening: {
+
+        duration: 12000,
+
+        thumbnailDesktop:
+        "https://files.catbox.moe/jip0n7.gif",
+
+        thumbnailMobile:
+        "https://files.catbox.moe/jip0n7.gif",
+
+        video:
+        "https://files.catbox.moe/4evy29.mp4"
+
+    }
+
+};
+
+/* ==========================================
+   INIT
+========================================== */
+
+window.addEventListener(
+    "DOMContentLoaded",
+    init
+);
+
+function init(){
+
+    setupLogo();
+    setupVideo();
+    setupOpening();
+    setupMenus();
+    setupPages();
+
+}
+
+/* ==========================================
+   LOGO
+========================================== */
+
+function setupLogo(){
+
+    const logo =
+    document.querySelector(".logo");
+
+    if(!logo) return;
+
+    logo.textContent =
+    SITE.logo;
+
+}
+
+/* ==========================================
+   VIDEO
+========================================== */
+
+function setupVideo(){
+
+    const video =
+    document.querySelector(
+        ".bg-video"
+    );
+
+    if(!video) return;
+
+    video.src =
+    SITE.opening.video;
+
+    video.autoplay = false;
+
+    video.loop = true;
+
+    video.muted = false;
+
+    video.playsInline = true;
+
+    video.preload = "auto";
+
+    video.load();
+
+    document.addEventListener(
+        "visibilitychange",
+        ()=>{
+
+            if(
+                document.hidden
+            ){
+                return;
+            }
+
+            video.play()
+            .catch(
+                showResumeButton
+            );
+
+        }
+    );
+
+    video.addEventListener(
+        "pause",
+        ()=>{
+
+            if(
+                !document.hidden
+            ){
+
+                showResumeButton();
+
+            }
+
+        }
+    );
+
+}
+/* ==========================================
+   OPENING
+========================================== */
+
+function setupOpening(){
+
+    const pieces =
+    document.querySelectorAll(".piece");
+
+    if(!pieces.length) return;
+
+    const imageUrl =
+
+    window.innerWidth <= 768
+
+    ? SITE.opening.thumbnailMobile
+
+    : SITE.opening.thumbnailDesktop;
+
+    pieces.forEach((piece,index)=>{
+
+        const row =
+        Math.floor(index / 4);
+
+        const col =
+        index % 4;
+
+        piece.style.backgroundImage =
+        `url(${imageUrl})`;
+
+        piece.style.backgroundSize =
+        "400% 400%";
+
+        piece.style.backgroundPosition =
+        `${col * 33.33}% ${row * 33.33}%`;
+
+    });
+
+    startOpeningAnimation();
+
+}
+
+/* ==========================================
+   OPENING ANIMATION
+========================================== */
+
+function startOpeningAnimation(){
+
+    const pieces =
+    document.querySelectorAll(".piece");
+
+    pieces.forEach((piece,index)=>{
+
+        const tx =
+        random(-300,300);
+
+        const ty =
+        random(-300,300);
+
+        const rot =
+        random(-1080,1080);
+
+        piece.animate(
+
+            [
+
+                {
+                    transform:
+                    "translate(0,0) scale(1)",
+                    opacity:1
+                },
+
+                {
+                    transform:
+                    `translate(${tx}px,${ty}px)
+                    rotate(${rot}deg)
+                    scale(0)`,
+
+                    opacity:0
+                },
+
+                {
+                    transform:
+                    "translate(0,0) rotate(0deg) scale(1)",
+
+                    opacity:1
+                }
+
+            ],
+
+            {
+
+                duration:8000,
+
+                delay:index*120,
+
+                easing:
+                "cubic-bezier(.25,1,.1,1)",
+
+                fill:"forwards"
+
+            }
+
+        );
+
+    });
+
+    setTimeout(
+        finishOpening,
+        SITE.opening.duration
+    );
+
+}
+
+/* ==========================================
+   OPENING END
+========================================== */
+
+function finishOpening(){
+
+    const opening =
+    document.querySelector(
+        ".opening-container"
+    );
+
+    const video =
+    document.querySelector(
+        ".bg-video"
+    );
+
+    const startBtn =
+    document.createElement("button");
+
+    startBtn.textContent =
+    "TAP TO START";
+
+    startBtn.style.position =
+    "fixed";
+
+    startBtn.style.left =
+    "50%";
+
+    startBtn.style.top =
+    "50%";
+
+    startBtn.style.transform =
+    "translate(-50%,-50%)";
+
+    startBtn.style.zIndex =
+    "10000";
+
+    startBtn.style.padding =
+    "20px 40px";
+
+    startBtn.style.fontSize =
+    "20px";
+
+    startBtn.style.cursor =
+    "pointer";
+
+    document.body.appendChild(
+        startBtn
+    );
+
+    startBtn.addEventListener(
+        "click",
+        ()=>{
+
+            video.currentTime = 0;
+
+            video.play();
+
+            startBtn.remove();
+
+            opening.style.transition =
+            "opacity 1s ease";
+
+            opening.style.opacity =
+            "0";
+
+            setTimeout(()=>{
+
+                opening.remove();
+
+            },1000);
+
+        }
+    );
+
+}
+/* ==========================================
+   MENUS
+========================================== */
+
+function setupMenus(){
+
+    document
+    .querySelectorAll(".nav-btn")
+    .forEach(button=>{
+
+        button.addEventListener(
+            "click",
+            ()=>{
+
+                openMenu(
+                    button.dataset.menu
+                );
+
+            }
+        );
+
+    });
+
+    document
+    .querySelectorAll(".menu-close")
+    .forEach(button=>{
+
+        button.addEventListener(
+            "click",
+            closeMenus
+        );
+
+    });
+
+    document.addEventListener(
+        "click",
+        outsideMenuClose
+    );
+
+}
+
+function openMenu(id){
+
+    closeMenus();
+
+    const menu =
+    document.getElementById(id);
+
+    if(menu){
+
+        menu.classList.add(
+            "active"
+        );
+
+    }
+
+}
+
+function closeMenus(){
+
+    document
+    .querySelectorAll(".mega-menu")
+    .forEach(menu=>{
+
+        menu.classList.remove(
+            "active"
+        );
+
+    });
+
+}
+
+function outsideMenuClose(e){
+
+    const menu =
+    e.target.closest(
+        ".mega-menu"
+    );
+
+    const nav =
+    e.target.closest(
+        ".nav-btn"
+    );
+
+    if(menu || nav){
+
+        return;
+
+    }
+
+    closeMenus();
+
+}
+
+/* ==========================================
+   PAGE CHANGE
+========================================== */
+
+function setupPages(){
+
+    document.addEventListener(
+        "click",
+        e=>{
+
+            const link =
+            e.target.closest(
+                ".menu-link"
+            );
+
+            if(!link){
+
+                return;
+
+            }
+
+            showPage(
+                link.dataset.page
+            );
+
+            closeMenus();
+
+        }
+    );
+
+}
+
+function showPage(id){
+
+    document
+    .querySelectorAll(".page")
+    .forEach(page=>{
+
+        page.classList.remove(
+            "active"
+        );
+
+    });
+
+    const target =
+    document.getElementById(id);
+
+    if(target){
+
+        target.classList.add(
+            "active"
+        );
+
+        window.scrollTo({
+
+            top:0,
+
+            behavior:"smooth"
+
+        });
+
+    }
+
+}
+
+/* ==========================================
+   RESIZE
+========================================== */
+
+window.addEventListener(
+    "resize",
+    debounce(
+        updateThumbnail,
+        250
+    )
+);
+
+function updateThumbnail(){
+
+    const pieces =
+    document.querySelectorAll(
+        ".piece"
+    );
+
+    const imageUrl =
+
+    window.innerWidth <= 768
+
+    ? SITE.opening.thumbnailMobile
+
+    : SITE.opening.thumbnailDesktop;
+
+    pieces.forEach(piece=>{
+
+        piece.style.backgroundImage =
+        `url(${imageUrl})`;
+
+    });
+
+}
+
+function debounce(fn,delay){
+
+    let timer;
+
+    return function(){
+
+        clearTimeout(timer);
+
+        timer =
+        setTimeout(
+            fn,
+            delay
+        );
+
+    };
+
+}
+
+	function showResumeButton(){
+
+    if(
+        document.getElementById(
+            "resumeBtn"
+        )
+    ){
+        return;
+    }
+
+    const btn =
+    document.createElement(
+        "button"
+    );
+
+    btn.id =
+    "resumeBtn";
+
+    btn.textContent =
+    "TAP TO RESUME";
+
+    btn.style.cssText = `
+        position:fixed;
+        left:50%;
+        top:50%;
+        transform:translate(-50%,-50%);
+        z-index:99999;
+        padding:20px 40px;
+        font-size:20px;
+        border:none;
+        border-radius:12px;
+        cursor:pointer;
+        background:#fff;
+        color:#000;
+    `;
+
+    document.body.appendChild(
+        btn
+    );
+
+    btn.addEventListener(
+        "click",
+        ()=>{
+
+            const video =
+            document.querySelector(
+                ".bg-video"
+            );
+
+            if(video){
+
+                video.play()
+                .catch(
+                    console.error
+                );
+
+            }
+
+            btn.remove();
+
+        }
+    );
+
+}
+/* ==========================================
+   UTILS
+========================================== */
+
+function random(min,max){
+
+    return Math.floor(
+
+        Math.random() *
+
+        (max-min+1)
+
+    ) + min;
+
+}
+</script>
+
+</body>
+</html>
